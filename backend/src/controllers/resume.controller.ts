@@ -1,8 +1,8 @@
-
 import { extractResumePdfText } from "../utils/extractPdfText";
 import { convertResumeToStructuredData } from "../utils/geminiExtractor";
 import { Request, Response } from "express";
 import {prisma} from '../config/prisma'
+import redisClient from "../config/redis";
 
 export const uploadResume = async (req:Request, res:Response) => {
   try {
@@ -31,6 +31,8 @@ export const uploadResume = async (req:Request, res:Response) => {
         data: structuredData,
       },
     });
+
+    await redisClient.del(`jobs:${userId}`);
 
     return res.status(201).json({
       success:true,

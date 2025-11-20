@@ -2,6 +2,7 @@ import express from 'express';
 import dtoenv from 'dotenv';
 dtoenv.config();
 import cookieParser from 'cookie-parser';
+import redisClient from './config/redis';
 import authRoutes from './routes/auth.routes';
 import resumeRoutes from './routes/resume.routes';
 import jobRoutes from "./routes/job.routes";
@@ -21,6 +22,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/jobs", jobRoutes);
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+    await redisClient.connect();
     console.log(`Server is running at port ${PORT}`)
 })

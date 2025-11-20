@@ -13,7 +13,57 @@ model User {
   fullName     String
   email        String   @unique
   password     String
-  refreshToken String?  
+  refreshToken String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  resumes      Resume[]
 }
+
+model Resume {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  rawText   String?
+  data      Json
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Job {
+  id                     String   @id @default(auto()) @map("_id") @db.ObjectId
+  jobId                  String   @unique              // job_id from API
+  jobTitle               String?
+  employerName           String?
+  employerLogo           String?
+  employerWebsite        String?
+  jobPublisher           String?
+  jobEmploymentType      String?
+  jobEmploymentTypes     String[] @default([])
+  jobApplyLink           String?
+  applyOptions           Json?
+  jobDescription         String?
+  jobIsRemote            Boolean?
+  jobPostedAt            String?
+  jobPostedAtTimestamp   Int?
+  jobPostedAtUTC         DateTime?
+
+  jobLocation            String?
+  jobCity                String?
+  jobState               String?
+  jobCountry             String?
+  jobLatitude            Float?
+  jobLongitude           Float?
+
+  jobBenefits            String[] @default([])
+  jobGoogleLink          String?
+  jobMinSalary           Int?
+  jobMaxSalary           Int?
+  jobSalaryPeriod        String?
+  jobHighlights          Json?
+
+  jobOnetSoc             String?
+  jobOnetJobZone         String?
+
+  createdAt              DateTime @default(now())
+  expiresAt              DateTime // (createdAt + 24 hours)
+}
+

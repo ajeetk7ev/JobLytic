@@ -49,7 +49,9 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 
 export const ModelName = {
-  User: 'User'
+  User: 'User',
+  Resume: 'Resume',
+  Job: 'Job'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -69,6 +71,55 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const ResumeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  rawText: 'rawText',
+  data: 'data',
+  createdAt: 'createdAt'
+} as const
+
+export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
+
+
+export const JobScalarFieldEnum = {
+  id: 'id',
+  jobId: 'jobId',
+  jobTitle: 'jobTitle',
+  employerName: 'employerName',
+  employerLogo: 'employerLogo',
+  employerWebsite: 'employerWebsite',
+  jobPublisher: 'jobPublisher',
+  jobEmploymentType: 'jobEmploymentType',
+  jobEmploymentTypes: 'jobEmploymentTypes',
+  jobApplyLink: 'jobApplyLink',
+  applyOptions: 'applyOptions',
+  jobDescription: 'jobDescription',
+  jobIsRemote: 'jobIsRemote',
+  jobPostedAt: 'jobPostedAt',
+  jobPostedAtTimestamp: 'jobPostedAtTimestamp',
+  jobPostedAtUTC: 'jobPostedAtUTC',
+  jobLocation: 'jobLocation',
+  jobCity: 'jobCity',
+  jobState: 'jobState',
+  jobCountry: 'jobCountry',
+  jobLatitude: 'jobLatitude',
+  jobLongitude: 'jobLongitude',
+  jobBenefits: 'jobBenefits',
+  jobGoogleLink: 'jobGoogleLink',
+  jobMinSalary: 'jobMinSalary',
+  jobMaxSalary: 'jobMaxSalary',
+  jobSalaryPeriod: 'jobSalaryPeriod',
+  jobHighlights: 'jobHighlights',
+  jobOnetSoc: 'jobOnetSoc',
+  jobOnetJobZone: 'jobOnetJobZone',
+  createdAt: 'createdAt',
+  expiresAt: 'expiresAt'
+} as const
+
+export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
 
 
 export const SortOrder = {

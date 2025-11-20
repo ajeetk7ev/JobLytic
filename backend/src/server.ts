@@ -2,7 +2,11 @@ import express from 'express';
 import dtoenv from 'dotenv';
 dtoenv.config();
 import cookieParser from 'cookie-parser';
-import authRoutes from './routes/auth.routes'
+import authRoutes from './routes/auth.routes';
+import resumeRoutes from './routes/resume.routes';
+import jobRoutes from "./routes/job.routes";
+
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -14,6 +18,9 @@ app.get("/", (req, res) => {
 })
 
 app.use("/api/auth", authRoutes);
+app.use("/api/resume", resumeRoutes);
+app.use("/api/jobs", jobRoutes);
+
 app.listen(PORT, () => {
     console.log(`Server is running at port ${PORT}`)
 })

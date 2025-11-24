@@ -1,11 +1,15 @@
 import { create } from "zustand";
-import api from "../utils/api";
-
-const AUTH_BASE = "/auth";
+import { API_URL } from "@/utils/api";
+import axios from "axios";
+import {
+  getFromLocalStorage,
+  removeFromLocalStorage,
+  setToLocalStorage,
+} from "@/utils/localstorage";
 
 interface AuthState {
-  accessToken: string | null;
-  isAuthenticated: boolean;
+  token: string | null;
+  isAuthenticationLoading: boolean;
 
   login: (
     email: string,
@@ -18,45 +22,47 @@ interface AuthState {
     password: string
   ) => Promise<{ success: boolean; error?: string }>;
 
-  refreshAccessToken: () => Promise<string>;
-  logout: () => Promise<void>;
-  setAccessToken: (token: string | null) => void;
-  checkAuth: () => Promise<void>;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
-  accessToken: null,
-  isAuthenticated: false,
+  token: getFromLocalStorage("token") ? getFromLocalStorage("token") : null,
+  isAuthenticationLoading: false,
 
   //LOGIN
   login: async (email: string, password: string) => {
+    set({ isAuthenticationLoading: true });
     try {
-      const res = await api.post(`${AUTH_BASE}/login`, { email, password });
-
-      const accessToken = res.data.accessToken;
-      set({ accessToken, isAuthenticated: true });
-
+      const res = await axios.post(`${API_URL}/auth/login`, {
+        email,
+        password,
+      });
+      const { token } = res.data.token;
+      setToLocalStorage("token", token);
+      set({ token: token });
       return { success: true };
     } catch (err: any) {
       return {
         success: false,
         error: err.response?.data?.message || "Login failed",
       };
+    } finally {
+      set({ isAuthenticationLoading: false });
     }
   },
 
   //SIGNUP
   signup: async (fullName: string, email: string, password: string) => {
     try {
-      const res = await api.post(`${AUTH_BASE}/signup`, {
+      const res = await axios.post(`${API_URL}/auth/signup`, {
         fullName,
         email,
         password,
       });
 
-      const accessToken = res.data.accessToken;
-
-      set({ accessToken, isAuthenticated: true });
+      const token = res.data.token;
+      setToLocalStorage("token", token);
+      set({ token: token });
 
       return { success: true };
     } catch (err: any) {
@@ -64,47 +70,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         success: false,
         error: err.response?.data?.message || "Signup failed",
       };
-    }
-  },
-
-  //REFRESH TOKEN
-  refreshAccessToken: async () => {
-    try {
-      const res = await api.post(`${AUTH_BASE}/refresh`, {});
-      const token = res.data.accessToken;
-
-      set({ accessToken: token, isAuthenticated: true });
-
-      return token;
-    } catch (err) {
-      set({ accessToken: null, isAuthenticated: false });
-      throw err;
+    } finally {
+      set({ isAuthenticationLoading: false });
     }
   },
 
   //LOGOUT
   logout: async () => {
-    try {
-      await api.post(`${AUTH_BASE}/logout`, {});
-    } finally {
-      set({ accessToken: null, isAuthenticated: false });
-    }
-  },
-
-  //Manual setter
-  setAccessToken: (token: string | null) =>
-    set({
-      accessToken: token,
-      isAuthenticated: !!token,
-    }),
-
-  //Check login state
-  checkAuth: async () => {
-    const { refreshAccessToken } = get();
-    try {
-      await refreshAccessToken();
-    } catch (err) {
-      set({ accessToken: null, isAuthenticated: false });
-    }
+    removeFromLocalStorage("token");
+    set({ token: null });
   },
 }));

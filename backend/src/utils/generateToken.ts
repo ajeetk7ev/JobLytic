@@ -11,3 +11,11 @@ export const generateRefreshToken = (userId: string) => {
     expiresIn: "7d",
   });
 };
+
+export const generateToken = (userId: string) => {
+  return jwt.sign({ userId }, process.env.GENERATE_TOKEN!, {
+    expiresIn: "7d",
+  });
+};
+
+

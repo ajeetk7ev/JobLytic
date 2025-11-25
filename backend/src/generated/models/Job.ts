@@ -974,11 +974,6 @@ export type NullableIntFieldUpdateOperationsInput = {
   unset?: boolean
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-  unset?: boolean
-}
-
 export type NullableFloatFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number

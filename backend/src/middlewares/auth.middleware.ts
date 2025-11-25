@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 interface AuthRequest extends Request {
-  user?: string;
+  id?: string;
 }
 
 export const authMiddleware = (
@@ -25,7 +25,7 @@ export const authMiddleware = (
     ) as { userId: string };
 
     // attach user id to request object
-    req.user = decoded.userId;
+    req.id = decoded.userId;
 
     next();
   } catch (error: any) {

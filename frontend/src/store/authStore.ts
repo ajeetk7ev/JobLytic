@@ -9,29 +9,29 @@ import {
 
 interface AuthState {
   token: string | null;
-  isAuthenticationLoading: boolean;
+  isAuthLoading: boolean;
 
   login: (
     email: string,
     password: string
-  ) => Promise<{ success: boolean; error?: string }>;
+  ) => Promise<{ success: boolean; errors?: any }>;
 
   signup: (
     fullName: string,
     email: string,
     password: string
-  ) => Promise<{ success: boolean; error?: string }>;
+  ) => Promise<{ success: boolean; errors?: any }>;
 
   logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   token: getFromLocalStorage("token") ? getFromLocalStorage("token") : null,
-  isAuthenticationLoading: false,
+  isAuthLoading: false,
 
   //LOGIN
   login: async (email: string, password: string) => {
-    set({ isAuthenticationLoading: true });
+    set({ isAuthLoading: true });
     try {
       const res = await axios.post(`${API_URL}/auth/login`, {
         email,
@@ -44,15 +44,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch (err: any) {
       return {
         success: false,
-        error: err.response?.data?.message || "Login failed",
+        errors: err.response?.data?.errors,
       };
     } finally {
-      set({ isAuthenticationLoading: false });
+      set({ isAuthLoading: false });
     }
   },
 
   //SIGNUP
   signup: async (fullName: string, email: string, password: string) => {
+    set({isAuthLoading:true})
     try {
       const res = await axios.post(`${API_URL}/auth/signup`, {
         fullName,
@@ -66,12 +67,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       return { success: true };
     } catch (err: any) {
+      console.log("error are", err)
       return {
         success: false,
-        error: err.response?.data?.message || "Signup failed",
+        errors: err.response?.data?.errors,
       };
     } finally {
-      set({ isAuthenticationLoading: false });
+      set({ isAuthLoading: false });
     }
   },
 

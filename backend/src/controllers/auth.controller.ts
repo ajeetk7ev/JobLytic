@@ -128,9 +128,17 @@ export const forgotPassword = async (req: Request, res: Response) => {
       .digest("hex");
     const resetPasswordExpire = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
 
+    // Save token in DB
+    await prisma.user.update({
+      where: { email },
+      data: {
+        resetPasswordToken,
+        resetPasswordExpire,
+      },
+    });
+
     const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-    const name = user.fullName;
-    const html = forgotPasswordTemplate(name, resetUrl);
+    const html = forgotPasswordTemplate(user.fullName, resetUrl);
 
     const isSent = await sendEmail({
       to: user.email,
@@ -141,19 +149,19 @@ export const forgotPassword = async (req: Request, res: Response) => {
     if (!isSent) {
       return res.status(200).json({
         success: false,
-        message: "Failed to send reset link to your email",
+        message: "Failed to send email",
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Reset link sent to your email",
     });
   } catch (err) {
-    console.error("Failed to send reset email", err);
-    res.status(500).json({
+    console.error("Forgot password error:", err);
+    return res.status(500).json({
       success: false,
-      message: "Email could not be sent",
+      message: "Server error",
     });
   }
 };
@@ -163,7 +171,6 @@ export const resetPassword = async (req: Request, res: Response) => {
   try {
     const { token } = req.params;
     const { password } = req.body;
-    const userId = (req as any).id;
 
     if (!password) {
       return res.status(400).json({
@@ -172,14 +179,22 @@ export const resetPassword = async (req: Request, res: Response) => {
       });
     }
 
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters",
+      });
+    }
+
+    // Hash token to compare with DB
     const resetPasswordToken = crypto
       .createHash("sha256")
       .update(token)
       .digest("hex");
 
+    // Find user by token & expiry
     const user = await prisma.user.findFirst({
       where: {
-        id: userId,
         resetPasswordToken,
         resetPasswordExpire: {
           gt: new Date(),
@@ -194,23 +209,24 @@ export const resetPassword = async (req: Request, res: Response) => {
       });
     }
 
-    user.password = await hashPassword(password);
-    await prisma.user.update({
-      where:{
-        id:userId
-      },
-      data:{
-        resetPasswordExpire:""
-      }
-    })
+    const hashedPassword = await hashPassword(password);
 
-    res.status(200).json({
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpire: null,
+      },
+    });
+
+    return res.status(200).json({
       success: true,
       message: "Password reset successful",
     });
   } catch (err) {
-    console.error("Failed to reset password", err);
-    res.status(500).json({
+    console.error("Reset password error:", err);
+    return res.status(500).json({
       success: false,
       message: "Server error",
     });

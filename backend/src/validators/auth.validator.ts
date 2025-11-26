@@ -26,3 +26,7 @@ export const loginSchema = z.object({
     .min(6, "Invalid Password")
     .max(100, "Password too long"),
 })
+
+export const forgetPasswordSchmea = z.object({
+  email:z.email("Invalid email address")
+})

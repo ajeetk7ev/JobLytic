@@ -5,10 +5,8 @@ import {
   FileCheck,
   Settings,
   PenTool,
-  LayoutDashboard,
   ClipboardList,
   Sparkles,
-  ListChecks,
 } from "lucide-react";
 
 export const sidebarLinks = [

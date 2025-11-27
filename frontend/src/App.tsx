@@ -3,6 +3,9 @@ import { SignupPage } from "./pages/Signup"
 import { LoginPage } from "./pages/Login"
 import ForgotPassword from "./pages/Forgot-password"
 import UpdatePassword from "./pages/Update-password"
+import ResumeUploadPage from "./pages/ResumeUpload"
+
+
 
 function App() {
   return (
@@ -12,6 +15,7 @@ function App() {
       <Route path="/login" element={<LoginPage/>} />
        <Route path='/forgot-password' element={<ForgotPassword />} />
        <Route path='/reset-password/:id' element={<UpdatePassword />} />
+       <Route path="/resume-upload" element={<ResumeUploadPage/>} />
     </Routes>
   )
 }

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import WorkSpaceNavbar from '@/components/workspace/Navbar';
 
 function WorkSpace() {
-  const { collapsed } = useSidebarCollapsedStore();
+  const { collapsed, setCollapsed } = useSidebarCollapsedStore();
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 640);
 
   useEffect(() => {
@@ -16,6 +16,14 @@ function WorkSpace() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    if(isDesktop){
+      setCollapsed(false);
+    } else{
+      setCollapsed(true);
+    }
+  }, [isDesktop])
+
   return (
     <div className="flex min-h-screen bg-gray-900 text-gray-200">
        <WorkSpaceNavbar/>
@@ -24,7 +32,7 @@ function WorkSpace() {
       </div>
 
       <div
-        className="flex-1 overflow-y-auto sm:p-8 pb-20 sm:pb-8 transition-all duration-300"
+        className=" flex-1 overflow-y-auto overflow-x-hidden sm:p-8 pb-20 sm:pb-8 transition-all duration-300"
         style={{
           marginTop:'60px',
           marginLeft: isDesktop ? (collapsed ? '5rem' : '16rem') : '0',

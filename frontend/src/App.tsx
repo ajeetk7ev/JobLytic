@@ -1,23 +1,41 @@
-import { Routes, Route } from "react-router-dom"
-import { SignupPage } from "./pages/Signup"
-import { LoginPage } from "./pages/Login"
-import ForgotPassword from "./pages/Forgot-password"
-import UpdatePassword from "./pages/Update-password"
-import ResumeUploadPage from "./pages/ResumeUpload"
-import WorkSpace from "./pages/Workspace"
+import { Routes, Route } from "react-router-dom";
+import { SignupPage } from "./pages/Signup";
+import { LoginPage } from "./pages/Login";
+import ForgotPassword from "./pages/Forgot-password";
+import UpdatePassword from "./pages/Update-password";
+import ResumeUploadPage from "./pages/ResumeUpload";
+import WorkSpace from "./pages/Workspace";
+import OpenRoute from "./components/auth/OpenRoute";
+import PrivateRoute from "./components/auth/PrivateRoute";
+import DashboardPage from "./pages/Dashboard";
 
 function App() {
   return (
     <Routes>
-    
-      <Route path="/signup" element={<SignupPage/>} />
-      <Route path="/login" element={<LoginPage/>} />
-       <Route path='/forgot-password' element={<ForgotPassword />} />
-       <Route path='/reset-password/:id' element={<UpdatePassword />} />
-       <Route path="/resume-upload" element={<ResumeUploadPage/>} />
-       <Route path="/" element={<WorkSpace/>} />
+      <Route
+        path="/signup"
+        element={
+          <PrivateRoute>
+            <SignupPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <OpenRoute>
+            <LoginPage />
+          </OpenRoute>
+        }
+      />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password/:id" element={<UpdatePassword />} />
+      <Route path="/resume-upload" element={<ResumeUploadPage />} />
+      <Route element={<WorkSpace />}>
+        <Route path="/dashboard" index element={<DashboardPage />} />
+      </Route>
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;

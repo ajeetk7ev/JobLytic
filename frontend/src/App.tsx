@@ -9,6 +9,7 @@ import OpenRoute from "./components/auth/OpenRoute";
 import PrivateRoute from "./components/auth/PrivateRoute";
 import DashboardPage from "./pages/Dashboard";
 import ResumeJDMatcherPage from "./pages/ResumeJDMatcher";
+import JDMatchResultPage from "./pages/ResumeJDResult";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
       <Route element={<WorkSpace />}>
         <Route path="/dashboard" index element={<DashboardPage />} />
         <Route path="resume-jd-matcher" element={<ResumeJDMatcherPage/>} />
+         <Route path="resume-jd-result" element={<JDMatchResultPage/>} />
       </Route>
     </Routes>
   );

@@ -1,7 +1,7 @@
 import { OpenRouter } from "@openrouter/sdk";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const MODEL = "meta-llama/llama-3.1-8b-instruct:free";
+const MODEL = "meta-llama/llama-3.3-70b-instruct:free";
 
 const openrouter = new OpenRouter({
   apiKey: OPENROUTER_API_KEY,

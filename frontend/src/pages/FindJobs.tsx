@@ -16,12 +16,14 @@ export default function FindJobsPage() {
   const [totalJobs, setTotalJobs] = useState(0);
   const [searchParams, setSearchParams] = useState<any>(null);
 
-  const fetchRecommended = async () => {
+  const fetchRecommended = async (currentPage = 1) => {
     setIsLoading(true);
     try {
-      const res = await api.get("/jobs/recommend");
+      const res = await api.get("/jobs/recommend", {
+        params: { page: currentPage }
+      });
       setJobs(res.data.jobs);
-      setTotalJobs(res.data.jobs.length);
+      setTotalJobs(res.data.total);
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to fetch recommendations");
     } finally {
@@ -52,7 +54,7 @@ export default function FindJobsPage() {
 
   useEffect(() => {
     if (activeTab === "recommended") {
-      fetchRecommended();
+      fetchRecommended(page);
     } else if (searchParams) {
       handleSearch(searchParams, false);
     }
@@ -122,7 +124,7 @@ export default function FindJobsPage() {
               </AnimatePresence>
             </div>
 
-            {activeTab === "search" && totalJobs > 10 && (
+            {totalJobs > 10 && (
               <div className="flex items-center justify-center gap-6 pt-10">
                  <button
                    disabled={page === 1 || isLoading}

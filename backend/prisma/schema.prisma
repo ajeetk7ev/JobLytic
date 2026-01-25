@@ -69,3 +69,9 @@ model Job {
   expiresAt              DateTime // (createdAt + 24 hours)
 }
 
+
+model JobQuery {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  query     String   @unique
+  fetchedAt DateTime @default(now())
+}

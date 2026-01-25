@@ -51,7 +51,8 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 export const ModelName = {
   User: 'User',
   Resume: 'Resume',
-  Job: 'Job'
+  Job: 'Job',
+  JobQuery: 'JobQuery'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -122,6 +123,15 @@ export const JobScalarFieldEnum = {
 } as const
 
 export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
+
+
+export const JobQueryScalarFieldEnum = {
+  id: 'id',
+  query: 'query',
+  fetchedAt: 'fetchedAt'
+} as const
+
+export type JobQueryScalarFieldEnum = (typeof JobQueryScalarFieldEnum)[keyof typeof JobQueryScalarFieldEnum]
 
 
 export const SortOrder = {

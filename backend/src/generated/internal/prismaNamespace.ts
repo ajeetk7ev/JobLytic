@@ -392,7 +392,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   User: 'User',
   Resume: 'Resume',
-  Job: 'Job'
+  Job: 'Job',
+  JobQuery: 'JobQuery'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "resume" | "job"
+    modelProps: "user" | "resume" | "job" | "jobQuery"
     txIsolationLevel: never
   }
   model: {
@@ -634,6 +635,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    JobQuery: {
+      payload: Prisma.$JobQueryPayload<ExtArgs>
+      fields: Prisma.JobQueryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JobQueryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobQueryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JobQueryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobQueryPayload>
+        }
+        findFirst: {
+          args: Prisma.JobQueryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobQueryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JobQueryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobQueryPayload>
+        }
+        findMany: {
+          args: Prisma.JobQueryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobQueryPayload>[]
+        }
+        create: {
+          args: Prisma.JobQueryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobQueryPayload>
+        }
+        createMany: {
+          args: Prisma.JobQueryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        delete: {
+          args: Prisma.JobQueryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobQueryPayload>
+        }
+        update: {
+          args: Prisma.JobQueryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobQueryPayload>
+        }
+        deleteMany: {
+          args: Prisma.JobQueryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JobQueryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        upsert: {
+          args: Prisma.JobQueryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JobQueryPayload>
+        }
+        aggregate: {
+          args: Prisma.JobQueryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJobQuery>
+        }
+        groupBy: {
+          args: Prisma.JobQueryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobQueryGroupByOutputType>[]
+        }
+        findRaw: {
+          args: Prisma.JobQueryFindRawArgs<ExtArgs>
+          result: Prisma.JsonObject
+        }
+        aggregateRaw: {
+          args: Prisma.JobQueryAggregateRawArgs<ExtArgs>
+          result: Prisma.JsonObject
+        }
+        count: {
+          args: Prisma.JobQueryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JobQueryCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -713,6 +788,15 @@ export const JobScalarFieldEnum = {
 } as const
 
 export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
+
+
+export const JobQueryScalarFieldEnum = {
+  id: 'id',
+  query: 'query',
+  fetchedAt: 'fetchedAt'
+} as const
+
+export type JobQueryScalarFieldEnum = (typeof JobQueryScalarFieldEnum)[keyof typeof JobQueryScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -895,6 +979,7 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   resume?: Prisma.ResumeOmit
   job?: Prisma.JobOmit
+  jobQuery?: Prisma.JobQueryOmit
 }
 
 /* Types for Logging */

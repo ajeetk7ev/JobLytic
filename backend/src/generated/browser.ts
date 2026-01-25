@@ -32,3 +32,8 @@ export type Resume = Prisma.ResumeModel
  * 
  */
 export type Job = Prisma.JobModel
+/**
+ * Model JobQuery
+ * 
+ */
+export type JobQuery = Prisma.JobQueryModel

@@ -3,7 +3,7 @@ import axios from "axios";
 export const fetchJobsFromAPI = async (
   query: string,
   page: number = 1,
-  params: any = {}
+  params: any = {},
 ) => {
   try {
     const response = await axios.get(
@@ -13,23 +13,25 @@ export const fetchJobsFromAPI = async (
           query,
           page,
           num_pages: 1,
-          date_posted: params.datePosted || "today",
-          country: params.country || "in",
-          employment_types: params.employmentTypes?.join(","),
+          date_posted: params.datePosted || "all",
+          country: params.country || "us",
+          language: params.language,
+          employment_types: params.employmentTypes,
           job_requirements: params.jobRequirements,
           radius: params.radius,
           work_from_home: params.remote,
+          exclude_job_publishers: params.excludePublishers,
         },
         headers: {
           "x-rapidapi-key": process.env.RAPIDAPI_KEY!,
           "x-rapidapi-host": process.env.RAPIDAPI_HOST!,
         },
-      }
+      },
     );
 
-    return response.data.data || [];
+    return response.data;
   } catch (error: any) {
     console.error("RapidAPI Fetch Error:", error.response?.data || error);
-    return [];
+    return { data: [], total: 0 };
   }
 };

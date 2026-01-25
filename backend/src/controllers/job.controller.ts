@@ -63,7 +63,7 @@ export const getRecommendedJobs = async (req: Request, res: Response) => {
       skills,
       experience,
       city: getString(req.query.city),
-      country: getString(req.query.country) || "in",
+      country: getString(req.query.country) || "us",
       role: getString(req.query.role),
       remote: getString(req.query.remote) === "true",
       employmentType: getString(req.query.type)?.split(","),
@@ -74,9 +74,10 @@ export const getRecommendedJobs = async (req: Request, res: Response) => {
     console.log("AI Generated Query →", aiQuery);
 
     // 4️⃣ Fetch from RapidAPI
-    const apiJobs = await fetchJobsFromAPI(aiQuery, 1, prefs);
+    const apiRes = await fetchJobsFromAPI(aiQuery, 1, prefs);
+    const apiJobs = apiRes?.data || [];
 
-    if (!apiJobs || apiJobs.length === 0)
+    if (apiJobs.length === 0)
       return res.json({
         success: true,
         query: aiQuery,
@@ -106,7 +107,7 @@ export const getRecommendedJobs = async (req: Request, res: Response) => {
 
     // 8️⃣ Rank by skills
     const rankedJobs = filterJobsBySkills(formattedJobs, skills).sort(
-      (a, b) => b.matchScore - a.matchScore
+      (a, b) => b.matchScore - a.matchScore,
     );
 
     // 9️⃣ Cache the result in Redis for 24 hours
@@ -115,7 +116,7 @@ export const getRecommendedJobs = async (req: Request, res: Response) => {
       JSON.stringify({ query: aiQuery, jobs: rankedJobs }),
       {
         EX: 60 * 60 * 24, // TTL in seconds (86400)
-      }
+      },
     );
 
     return res.status(200).json({
@@ -127,6 +128,67 @@ export const getRecommendedJobs = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Job Fetch Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+export const searchJobs = async (req: Request, res: Response) => {
+  try {
+    const {
+      query,
+      page = 1,
+      country = "us",
+      language,
+      date_posted = "all",
+      work_from_home = false,
+      employment_types,
+      job_requirements,
+      radius,
+      exclude_job_publishers,
+    } = req.query;
+
+    if (!query) {
+      return res.status(400).json({
+        success: false,
+        message: "Query is required",
+      });
+    }
+
+    const params = {
+      country,
+      language,
+      datePosted: date_posted,
+      remote: work_from_home === "true",
+      employmentTypes: employment_types,
+      job_requirements,
+      radius: radius ? Number(radius) : undefined,
+      excludePublishers: exclude_job_publishers,
+    };
+
+    const apiRes = await fetchJobsFromAPI(
+      query as string,
+      Number(page),
+      params,
+    );
+
+    // Save to DB for future JD matching references
+    if (apiRes?.data) {
+      for (const job of apiRes.data) {
+        await saveJobToDB(job);
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: apiRes.data || [],
+      total: apiRes.total || 0,
+      page: Number(page),
+    });
+  } catch (error) {
+    console.error("Job Search Error:", error);
     return res.status(500).json({
       success: false,
       message: "Server error",

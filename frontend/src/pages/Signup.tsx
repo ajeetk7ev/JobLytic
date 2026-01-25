@@ -17,7 +17,7 @@ export const SignupPage = () => {
     setError("");
     const result = await signup(fullName, email, password);
     if (result.success) {
-      navigate("/dashboard");
+      navigate("/onboarding");
     } else {
       setError(result.message || "Signup failed. Please try again.");
     }

@@ -1,7 +1,11 @@
-import axios from "axios";
+import { OpenRouter } from "@openrouter/sdk";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const MODEL = "meta-llama/llama-3.1-8b-instruct:free";
+
+const openrouter = new OpenRouter({
+  apiKey: OPENROUTER_API_KEY,
+});
 
 export const callOpenRouter = async (prompt: string) => {
   if (!OPENROUTER_API_KEY) {
@@ -11,28 +15,16 @@ export const callOpenRouter = async (prompt: string) => {
   }
 
   try {
-    const response = await axios.post(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        model: MODEL,
-        messages: [{ role: "user", content: prompt }],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "http://localhost:3000", // Required by OpenRouter
-          "X-Title": "Joblytic", // Required by OpenRouter
-          "Content-Type": "application/json",
-        },
-      },
-    );
+    const response = await openrouter.chat.send({
+      model: MODEL,
+      messages: [{ role: "user", content: prompt }],
+    });
 
-    return response.data.choices[0].message.content;
+    // Handle both streaming and non-streaming responses if the SDK returns them differently
+    // Usually non-streaming returns the whole object
+    return (response as any).choices[0].message.content;
   } catch (error: any) {
-    console.error(
-      "OpenRouter API Error:",
-      error.response?.data || error.message,
-    );
+    console.error("OpenRouter API Error:", error.message);
     throw new Error("Failed to get response from AI service");
   }
 };

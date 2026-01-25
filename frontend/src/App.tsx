@@ -10,6 +10,8 @@ import PrivateRoute from "./components/auth/PrivateRoute";
 import DashboardPage from "./pages/Dashboard";
 import ResumeJDMatcherPage from "./pages/ResumeJDMatcher";
 import JDMatchResultPage from "./pages/ResumeJDResult";
+import FindJobsPage from "./pages/FindJobs";
+import OnboardingPage from "./pages/Onboarding";
 
 import { useEffect } from "react";
 import { useAuthStore } from "./store/authStore";
@@ -51,11 +53,14 @@ function App() {
       <Route path="/forgot-password" element={<OpenRoute><ForgotPassword /></OpenRoute>} />
       <Route path="/reset-password/:id" element={<OpenRoute><UpdatePassword /></OpenRoute>} />
       
+      <Route path="/onboarding" element={<PrivateRoute><OnboardingPage /></PrivateRoute>} />
+      
       <Route element={<PrivateRoute><WorkSpace /></PrivateRoute>}>
         <Route path="/dashboard" index element={<DashboardPage />} />
         <Route path="/resume-upload" element={<ResumeUploadPage />} />
         <Route path="/resume-jd-matcher" element={<ResumeJDMatcherPage/>} />
         <Route path="/resume-jd-result" element={<JDMatchResultPage/>} />
+        <Route path="/jobs" element={<FindJobsPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" />} />

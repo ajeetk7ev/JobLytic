@@ -19,7 +19,7 @@ export const sidebarLinks = [
   {
     id: 2,
     name: "Job Tracker",
-    path: "/tracker",
+    path: "/job-tracker",
     icon: ClipboardList,
   },
   {

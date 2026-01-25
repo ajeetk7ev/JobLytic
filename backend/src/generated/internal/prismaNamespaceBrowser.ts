@@ -52,7 +52,8 @@ export const ModelName = {
   User: 'User',
   Resume: 'Resume',
   Job: 'Job',
-  JobQuery: 'JobQuery'
+  JobQuery: 'JobQuery',
+  JobApplication: 'JobApplication'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -132,6 +133,26 @@ export const JobQueryScalarFieldEnum = {
 } as const
 
 export type JobQueryScalarFieldEnum = (typeof JobQueryScalarFieldEnum)[keyof typeof JobQueryScalarFieldEnum]
+
+
+export const JobApplicationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  jobId: 'jobId',
+  company: 'company',
+  position: 'position',
+  location: 'location',
+  type: 'type',
+  status: 'status',
+  salary: 'salary',
+  url: 'url',
+  dateApplied: 'dateApplied',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JobApplicationScalarFieldEnum = (typeof JobApplicationScalarFieldEnum)[keyof typeof JobApplicationScalarFieldEnum]
 
 
 export const SortOrder = {

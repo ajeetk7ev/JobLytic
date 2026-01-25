@@ -19,6 +19,7 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   resumes      Resume[]
+  jobApplications JobApplication[]
 }
 
 model Resume {
@@ -74,4 +75,31 @@ model JobQuery {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   query     String   @unique
   fetchedAt DateTime @default(now())
+}
+
+model JobApplication {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  
+  jobId       String?  @db.ObjectId // Optional link to a Job in our DB
+  
+  company     String
+  position    String
+  location    String?
+  type        String?  // Remote, Hybrid, On-site
+  
+  status      String   @default("applied") // wishlist, applied, interviewing, offer, rejected
+  
+  salary      String?
+  url         String?
+  
+  dateApplied DateTime?
+  
+  notes       String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }

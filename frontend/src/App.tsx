@@ -11,6 +11,7 @@ import DashboardPage from "./pages/Dashboard";
 import ResumeJDMatcherPage from "./pages/ResumeJDMatcher";
 import JDMatchResultPage from "./pages/ResumeJDResult";
 import FindJobsPage from "./pages/FindJobs";
+import JobTrackerPage from "./pages/JobTracker";
 import OnboardingPage from "./pages/Onboarding";
 
 import { useEffect } from "react";
@@ -61,6 +62,7 @@ function App() {
         <Route path="/resume-jd-matcher" element={<ResumeJDMatcherPage/>} />
         <Route path="/resume-jd-result" element={<JDMatchResultPage/>} />
         <Route path="/jobs" element={<FindJobsPage />} />
+        <Route path="/job-tracker" element={<JobTrackerPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" />} />

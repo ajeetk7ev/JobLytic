@@ -37,3 +37,8 @@ export type Job = Prisma.JobModel
  * 
  */
 export type JobQuery = Prisma.JobQueryModel
+/**
+ * Model JobApplication
+ * 
+ */
+export type JobApplication = Prisma.JobApplicationModel

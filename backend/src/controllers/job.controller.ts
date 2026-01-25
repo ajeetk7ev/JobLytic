@@ -43,6 +43,27 @@ export const getRecommendedJobs = async (req: Request, res: Response) => {
         message: "Upload resume first",
       });
 
+    // Check Credits
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    // Allow if plan is pro_yearly (unlimited) OR credits > 0
+    if (user?.plan !== "pro_yearly" && (user?.credits || 0) <= 0) {
+      return res
+        .status(403)
+        .json({
+          success: false,
+          message: "Insufficient credits. Please upgrade.",
+        });
+    }
+
+    // Deduct Credit if not unlimited
+    if (user?.plan !== "pro_yearly") {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { credits: { decrement: 1 } },
+      });
+    }
+
     const skills = (resume.data as any)?.skills || [];
     //@ts-ignore
     const experience = resume.data?.experience?.length || 0;

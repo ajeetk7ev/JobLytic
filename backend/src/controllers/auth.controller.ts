@@ -32,6 +32,7 @@ export const signup = async (req: Request, res: Response) => {
         fullName,
         email,
         password: hashedPassword,
+        credits: 5, // Default free credits
       },
     });
 
@@ -134,7 +135,7 @@ export const getMe = async (req: any, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: req.id },
-      select: { id: true, email: true, fullName: true },
+      select: { id: true, email: true, fullName: true, avatar: true },
     });
 
     if (!user) {
@@ -289,47 +290,115 @@ export const resetPassword = async (req: Request, res: Response) => {
 };
 
 // ------------------- CHANGE PASSWORD -------------------
-// export const changePassword = async (req: Request, res: Response) => {
-//   try {
-//     const userId = (req as any).user._id;
-//     const { currentPassword, newPassword } = req.body;
+// ------------------- UPDATE PROFILE -------------------
+export const updateProfile = async (req: any, res: Response) => {
+  try {
+    const { fullName, email } = req.body;
+    const file = req.file;
+    const userId = req.id;
 
-//     if (!currentPassword || !newPassword) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Current password and new password are required",
-//       });
-//     }
+    let avatarUrl;
 
-//     const user = await User.findById(userId).select("+password");
-//     if (!user) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "User not found",
-//       });
-//     }
+    if (file) {
+      // Lazy load Cloudinary
+      const { v2: cloudinary } = await import("cloudinary");
+      if (!process.env.CLOUDINARY_CLOUD_NAME) {
+        console.warn("Cloudinary keys missing, skipping upload");
+      } else {
+        cloudinary.config({
+          cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+          api_key: process.env.CLOUDINARY_API_KEY,
+          api_secret: process.env.CLOUDINARY_API_SECRET,
+        });
 
-//     const isMatch = await bcrypt.compare(currentPassword, user.password);
-//     if (!isMatch) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Current password is incorrect",
-//       });
-//     }
+        // Upload to Cloudinary (buffer -> base64 or stream)
+        // Since we might be using memory storage, we can upload buffer
+        const b64 = Buffer.from(file.buffer).toString("base64");
+        const dataURI = "data:" + file.mimetype + ";base64," + b64;
+        const result = await cloudinary.uploader.upload(dataURI, {
+          folder: "joblytic_avatars",
+        });
+        avatarUrl = result.secure_url;
+      }
+    }
 
-//     user.password = await bcrypt.hash(newPassword, 10);
-//     await user.save();
+    const updates: any = {};
+    if (fullName) updates.fullName = fullName;
+    if (email) updates.email = email;
+    if (avatarUrl) updates.avatar = avatarUrl;
 
-//     res.status(200).json({
-//       success: true,
-//       message: "Password changed successfully",
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({
-//       success: false,
-//       message: "Server error",
-//       error: err,
-//     });
-//   }
-// };
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: updates,
+      select: { id: true, fullName: true, email: true, avatar: true },
+    });
+
+    res.status(200).json({ success: true, message: "Profile updated", user });
+  } catch (error) {
+    console.error("Update profile error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// ------------------- CHANGE PASSWORD -------------------
+export const changePassword = async (req: any, res: Response) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    const userId = req.id;
+
+    if (!currentPassword || !newPassword) {
+      return res
+        .status(400)
+        .json({ success: false, message: "All fields required" });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+
+    const isMatch = await comparePassword(currentPassword, user.password);
+    if (!isMatch) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Incorrect current password" });
+    }
+
+    const hashedPassword = await hashPassword(newPassword);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
+    res
+      .status(200)
+      .json({ success: true, message: "Password updated successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// ------------------- DELETE ACCOUNT -------------------
+export const deleteAccount = async (req: any, res: Response) => {
+  try {
+    const userId = req.id;
+
+    // Delete related data (Prisma doesn't cascade automatically for Mongo unless relation specific)
+    // Delete payments, resumes, applications first if needed or rely on cleanup
+    await prisma.resume.deleteMany({ where: { userId } });
+    await prisma.jobApplication.deleteMany({ where: { userId } });
+    await prisma.payment.deleteMany({ where: { userId } });
+
+    await prisma.user.delete({ where: { id: userId } });
+
+    res.clearCookie("token");
+    res
+      .status(200)
+      .json({ success: true, message: "Account deleted permanently" });
+  } catch (error) {
+    console.error("Delete account error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};

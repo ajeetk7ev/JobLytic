@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth.routes";
 import resumeRoutes from "./routes/resume.routes";
 import jobRoutes from "./routes/job.routes";
 import jobApplicationRoutes from "./routes/jobApplication.routes";
+import subscriptionRoutes from "./routes/subscription.routes";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,6 +29,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/resume", resumeRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", jobApplicationRoutes);
+app.use("/api/subscription", subscriptionRoutes);
 
 app.listen(PORT, async () => {
   await redisClient.connect();

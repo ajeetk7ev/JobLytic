@@ -7,6 +7,7 @@ import {
   PenTool,
   ClipboardList,
   Sparkles,
+  CreditCard,
 } from "lucide-react";
 
 export const sidebarLinks = [
@@ -54,6 +55,12 @@ export const sidebarLinks = [
   },
   {
     id: 8,
+    name: "Subscription",
+    path: "/subscription",
+    icon: CreditCard,
+  },
+  {
+    id: 9,
     name: "Settings",
     path: "/settings",
     icon: Settings,

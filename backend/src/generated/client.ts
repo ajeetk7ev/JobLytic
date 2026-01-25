@@ -48,6 +48,11 @@ path.join(process.cwd(), "src/generated/query_engine-windows.dll.node")
  */
 export type User = Prisma.UserModel
 /**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel
+/**
  * Model Resume
  * 
  */

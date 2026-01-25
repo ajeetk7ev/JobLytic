@@ -12,6 +12,9 @@ import ResumeJDMatcherPage from "./pages/ResumeJDMatcher";
 import JDMatchResultPage from "./pages/ResumeJDResult";
 import FindJobsPage from "./pages/FindJobs";
 import JobTrackerPage from "./pages/JobTracker";
+import ResumeBuilderPage from "./pages/ResumeBuilder";
+import SubscriptionPage from "./pages/Subscription";
+import SettingsPage from "./pages/Settings";
 import OnboardingPage from "./pages/Onboarding";
 
 import { useEffect } from "react";
@@ -63,6 +66,9 @@ function App() {
         <Route path="/resume-jd-result" element={<JDMatchResultPage/>} />
         <Route path="/jobs" element={<FindJobsPage />} />
         <Route path="/job-tracker" element={<JobTrackerPage />} />
+        <Route path="/resume-builder" element={<ResumeBuilderPage />} />
+        <Route path="/subscription" element={<SubscriptionPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" />} />

@@ -1,4 +1,5 @@
-import { Menu, LogOut, User, Bell, Search as SearchIcon, Sun, Moon } from "lucide-react";
+import { Menu, LogOut, User, Bell, Search as SearchIcon, Sun, Moon, Zap } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useSidebarCollapsedStore } from "@/store/sidebarCollapsedStore";
 import { useAuthStore } from "@/store/authStore";
 import { useThemeStore } from "@/store/themeStore";
@@ -48,6 +49,11 @@ function WorkSpaceNavbar() {
 
             {/* Right section */}
             <div className="flex items-center gap-4">
+                <Link to="/subscription">
+                    <button className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary to-accent hover:opacity-90 text-primary-foreground rounded-full text-xs font-bold uppercase tracking-widest transition-all shadow-lg shadow-primary/25">
+                        <Zap size={14} className="fill-current" /> Upgrade
+                    </button>
+                </Link>
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}

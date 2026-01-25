@@ -1,49 +1,53 @@
 import { create } from "zustand";
-import { API_URL } from "@/utils/api";
-import axios from "axios";
-import {
-  getFromLocalStorage,
-  removeFromLocalStorage,
-  setToLocalStorage,
-} from "@/utils/localstorage";
+import api from "@/utils/api";
+
+interface User {
+  id: string;
+  email: string;
+  fullName: string;
+}
 
 interface AuthState {
-  token: string | null;
+  user: User | null;
+  isAuthenticated: boolean;
   isAuthLoading: boolean;
+  isCheckingAuth: boolean;
 
   login: (
     email: string,
-    password: string
-  ) => Promise<{ success: boolean; errors?: any }>;
+    password: string,
+  ) => Promise<{ success: boolean; message?: string; errors?: any }>;
 
   signup: (
     fullName: string,
     email: string,
-    password: string
-  ) => Promise<{ success: boolean; errors?: any }>;
+    password: string,
+  ) => Promise<{ success: boolean; message?: string; errors?: any }>;
 
-  logout: () => void;
+  logout: () => Promise<void>;
+  checkAuth: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
-  token: getFromLocalStorage("token") ? getFromLocalStorage("token") : null,
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  isAuthenticated: false,
   isAuthLoading: false,
+  isCheckingAuth: true,
 
-  //LOGIN
+  // LOGIN
   login: async (email: string, password: string) => {
     set({ isAuthLoading: true });
     try {
-      const res = await axios.post(`${API_URL}/auth/login`, {
+      const res = await api.post(`/auth/login`, {
         email,
         password,
       });
-      const { token } = res.data.token;
-      setToLocalStorage("token", token);
-      set({ token: token });
+      set({ user: res.data.user, isAuthenticated: true });
       return { success: true };
     } catch (err: any) {
       return {
         success: false,
+        message: err.response?.data?.message || "Login failed",
         errors: err.response?.data?.errors,
       };
     } finally {
@@ -51,25 +55,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  //SIGNUP
+  // SIGNUP
   signup: async (fullName: string, email: string, password: string) => {
-    set({isAuthLoading:true})
+    set({ isAuthLoading: true });
     try {
-      const res = await axios.post(`${API_URL}/auth/signup`, {
+      const res = await api.post(`/auth/signup`, {
         fullName,
         email,
         password,
       });
-
-      const token = res.data.token;
-      setToLocalStorage("token", token);
-      set({ token: token });
-
+      set({ user: res.data.user, isAuthenticated: true });
       return { success: true };
     } catch (err: any) {
-      console.log("error are", err)
       return {
         success: false,
+        message: err.response?.data?.message || "Signup failed",
         errors: err.response?.data?.errors,
       };
     } finally {
@@ -77,9 +77,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
   },
 
-  //LOGOUT
+  // LOGOUT
   logout: async () => {
-    removeFromLocalStorage("token");
-    set({ token: null });
+    try {
+      await api.post("/auth/logout");
+    } finally {
+      set({ user: null, isAuthenticated: false });
+    }
+  },
+
+  // CHECK AUTH
+  checkAuth: async () => {
+    set({ isCheckingAuth: true });
+    try {
+      const res = await api.get("/auth/get-me");
+      set({ user: res.data.user, isAuthenticated: true });
+    } catch (err) {
+      set({ user: null, isAuthenticated: false });
+    } finally {
+      set({ isCheckingAuth: false });
+    }
   },
 }));

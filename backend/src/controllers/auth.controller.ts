@@ -35,13 +35,19 @@ export const signup = async (req: Request, res: Response) => {
       },
     });
 
-    // Tokens
+    // Token
     const token = generateToken(user.id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
 
     return res.status(201).json({
       success: true,
       message: "User created successfully",
-      token,
       user: {
         id: user.id,
         email: user.email,
@@ -49,13 +55,21 @@ export const signup = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.log("Error while signup", error);
-    res.status(500).json({ message: "Something went wrong" });
+    console.error("Signup error details:", error);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong during signup",
+      error:
+        process.env.NODE_ENV === "development"
+          ? (error as any).message
+          : undefined,
+    });
   }
 };
 
 export const login = async (req: Request, res: Response) => {
   try {
+    console.log("Login request received");
     const parsed = loginSchema.safeParse(req.body);
     if (!parsed.success) {
       return res
@@ -77,12 +91,19 @@ export const login = async (req: Request, res: Response) => {
         .status(400)
         .json({ success: false, message: "Invalid credentials" });
 
-    // Generate tokens
+    // Generate token
     const token = generateToken(user.id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
     return res.status(200).json({
       success: true,
       message: "Login success",
-      token,
       user: {
         id: user.id,
         email: user.email,
@@ -90,7 +111,41 @@ export const login = async (req: Request, res: Response) => {
       },
     });
   } catch (error) {
-    console.log("Error in login", error);
+    console.error("Login error details:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong during login",
+      error:
+        process.env.NODE_ENV === "development"
+          ? (error as any).message
+          : undefined,
+    });
+  }
+};
+
+export const logout = async (req: Request, res: Response) => {
+  res.clearCookie("token");
+  return res
+    .status(200)
+    .json({ success: true, message: "Logged out successfully" });
+};
+
+export const getMe = async (req: any, res: Response) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.id },
+      select: { id: true, email: true, fullName: true },
+    });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    return res.status(200).json({ success: true, user });
+  } catch (error) {
+    console.log("Error in getMe", error);
     return res
       .status(500)
       .json({ success: false, message: "Something went wrong" });

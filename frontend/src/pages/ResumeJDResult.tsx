@@ -1,350 +1,221 @@
+import { useLocation, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
-  CheckCircle2,
-  XCircle,
   AlertTriangle,
   Sparkles,
-  ListChecks,
+  ArrowLeft,
+  Briefcase,
+  GraduationCap,
+  Code2,
+  Cpu,
+  Mail,
+  Linkedin,
+  Phone
 } from "lucide-react";
 
-type MatchSectionScore = {
-  label: string;
-  score: number;
-  max: number;
-};
+export default function JDMatchResultPage() {
+  const location = useLocation();
+  const resumeData = location.state?.resumeData;
 
-type SkillCategory = {
-  name: string;
-  resumeCount: number;
-  jdCount: number;
-  matchPercent: number;
-};
-
-type JDComparison = {
-  requirement: string;
-  status: "matched" | "missing" | "partial";
-};
-
-const overallMatch = 78;
-
-const sectionScores: MatchSectionScore[] = [
-  { label: "Format & ATS", score: 22, max: 30 },
-  { label: "Keywords", score: 20, max: 30 },
-  { label: "Skills", score: 18, max: 25 },
-  { label: "Experience Fit", score: 18, max: 25 },
-];
-
-const matchedKeywords = [
-  "React",
-  "TypeScript",
-  "REST APIs",
-  "MongoDB",
-  "Git",
-  "Agile",
-];
-
-const missingKeywords = [
-  "GraphQL",
-  "CI/CD",
-  "Microservices",
-  "AWS",
-  "System Design",
-];
-
-const skillCategories: SkillCategory[] = [
-  { name: "Frontend", resumeCount: 5, jdCount: 7, matchPercent: 71 },
-  { name: "Backend", resumeCount: 3, jdCount: 5, matchPercent: 60 },
-  { name: "DevOps / Cloud", resumeCount: 1, jdCount: 4, matchPercent: 25 },
-  { name: "Soft Skills", resumeCount: 4, jdCount: 5, matchPercent: 80 },
-];
-
-const aiSummary =
-  "Your resume is a strong match for this role, especially on core frontend skills like React, TypeScript, and REST APIs. To further increase your match score, highlight experience with GraphQL, CI/CD pipelines, and cloud deployment (AWS). Adding 1–2 bullet points around ownership and system design will better align with the seniority expectations of this job.";
-
-const improvementSuggestions = [
-  "Add GraphQL and CI/CD under your Technical Skills section.",
-  "Mention any production deployments using AWS / Vercel / Docker.",
-  "Rewrite 2–3 bullet points to focus on measurable impact (e.g., performance, revenue, users).",
-  "Add a short 'Summary' section tailored to this JD with role + years + key stack.",
-];
-
-const jdComparisons: JDComparison[] = [
-  {
-    requirement: "2+ years of experience with React and TypeScript.",
-    status: "matched",
-  },
-  {
-    requirement: "Hands-on experience with GraphQL APIs.",
-    status: "missing",
-  },
-  {
-    requirement: "Exposure to CI/CD and DevOps tooling.",
-    status: "partial",
-  },
-  {
-    requirement: "Experience with cloud platforms (AWS / GCP / Azure).",
-    status: "missing",
-  },
-  {
-    requirement: "Strong communication and collaboration skills.",
-    status: "matched",
-  },
-];
-
-// ---------------- Components ----------------
-
-const ScoreRing = ({ score }: { score: number }) => {
-  const strokeDasharray = 283; // circle circumference (approx)
-  const strokeDashoffset = strokeDasharray - (strokeDasharray * score) / 100;
-
-  return (
-    <div className="flex items-center gap-6">
-      <svg width="120" height="120" className="-rotate-90">
-        <circle
-          cx="60"
-          cy="60"
-          r="45"
-          stroke="#1f2937"
-          strokeWidth="12"
-          fill="none"
-        />
-        <circle
-          cx="60"
-          cy="60"
-          r="45"
-          stroke={score >= 75 ? "#22c55e" : score >= 50 ? "#eab308" : "#f97373"}
-          strokeWidth="12"
-          fill="none"
-          strokeDasharray={strokeDasharray}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-        />
-      </svg>
-      <div className="rotate-0">
-        <p className="text-sm text-gray-400 mb-1">Overall Match</p>
-        <p className="text-4xl font-bold text-white">{score}</p>
-        <p className="text-sm text-gray-400 mt-1">out of 100</p>
-      </div>
-    </div>
-  );
-};
-
-const SectionScoreBar = ({ section }: { section: MatchSectionScore }) => {
-  const percent = Math.round((section.score / section.max) * 100);
-  const barColor =
-    percent >= 75 ? "bg-green-500" : percent >= 50 ? "bg-yellow-400" : "bg-red-500";
-
-  return (
-    <div className="space-y-1">
-      <div className="flex justify-between text-xs text-gray-400">
-        <span>{section.label}</span>
-        <span>
-          {section.score}/{section.max}
-        </span>
-      </div>
-      <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-        <div
-          className={`h-full ${barColor}`}
-          style={{ width: `${percent}%` }}
-        />
-      </div>
-    </div>
-  );
-};
-
-const KeywordChip = ({
-  keyword,
-  type,
-}: {
-  keyword: string;
-  type: "matched" | "missing";
-}) => {
-  const base =
-    "px-3 py-1 rounded-full text-xs flex items-center gap-2 border";
-  if (type === "matched") {
+  if (!resumeData) {
     return (
-      <span className={`${base} border-green-500/40 bg-green-500/10 text-green-300`}>
-        <CheckCircle2 size={14} /> {keyword}
-      </span>
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-20 h-20 bg-destructive/10 text-destructive rounded-3xl flex items-center justify-center mb-6">
+           <AlertTriangle size={40} />
+        </div>
+        <h2 className="text-3xl font-black mb-4">No analysis data found</h2>
+        <p className="text-muted-foreground mb-8">Please upload your resume first to see the magic.</p>
+        <Link to="/resume-upload" className="px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black hover:scale-105 transition-transform flex items-center gap-2">
+           <ArrowLeft size={20} /> Go Back to Upload
+        </Link>
+      </div>
     );
   }
-  return (
-    <span className={`${base} border-red-500/40 bg-red-500/10 text-red-300`}>
-      <XCircle size={14} /> {keyword}
-    </span>
-  );
-};
-
-const SkillCategoryRow = ({ cat }: { cat: SkillCategory }) => {
-  const barColor =
-    cat.matchPercent >= 75
-      ? "bg-green-500"
-      : cat.matchPercent >= 50
-      ? "bg-yellow-400"
-      : "bg-red-500";
 
   return (
-    <div className="space-y-1">
-      <div className="flex justify-between text-xs text-gray-400">
-        <span>{cat.name}</span>
-        <span>{cat.matchPercent}% match</span>
-      </div>
-      <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-        <div
-          className={`h-full ${barColor}`}
-          style={{ width: `${cat.matchPercent}%` }}
-        />
-      </div>
-      <p className="text-[11px] text-gray-500">
-        Resume: {cat.resumeCount} · JD: {cat.jdCount}
-      </p>
-    </div>
-  );
-};
+    <div className="w-full h-full pb-20 relative">
+      <div className="absolute top-0 right-0 w-full max-w-5xl h-full bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
 
-const JDComparisonRow = ({ row }: { row: JDComparison }) => {
-  let icon;
-  let color;
-  if (row.status === "matched") {
-    icon = <CheckCircle2 className="text-green-400 w-4 h-4" />;
-    color = "text-green-300";
-  } else if (row.status === "missing") {
-    icon = <XCircle className="text-red-400 w-4 h-4" />;
-    color = "text-red-300";
-  } else {
-    icon = <AlertTriangle className="text-yellow-400 w-4 h-4" />;
-    color = "text-yellow-300";
-  }
+      <header className="mb-12 relative z-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <div>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 text-primary border border-primary/20 rounded-full text-[10px] font-black tracking-[0.2em] mb-6 uppercase"
+          >
+            <Sparkles size={14} className="animate-pulse" /> Analysis Completed
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl font-black tracking-tighter text-gradient"
+          >
+            Your AI Identity.
+          </motion.h1>
+          <p className="text-muted-foreground font-medium mt-3 text-lg">Detailed extraction of your professional profile.</p>
+        </div>
+        
+        <Link to="/resume-upload" className="px-6 py-3 glass hover:bg-secondary/50 rounded-2xl font-bold flex items-center gap-2 transition-all border border-white/10">
+           <ArrowLeft size={18} /> Re-extract Resume
+        </Link>
+      </header>
 
-  return (
-    <div className="flex items-start gap-3 py-2 border-b border-gray-800 last:border-0">
-      {icon}
-      <p className={`text-sm ${row.status === "missing" ? "text-gray-300" : "text-gray-200"}`}>
-        {row.requirement}
-      </p>
-    </div>
-  );
-};
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 relative z-10">
+        {/* Left Column: Basic Info & Summary */}
+        <div className="lg:col-span-1 space-y-10">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="glass p-10 rounded-[3rem] border border-white/10 relative overflow-hidden group"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-primary/20 transition-all duration-700" />
+            
+            <div className="w-20 h-20 bg-primary text-primary-foreground rounded-3xl flex items-center justify-center text-3xl font-black mb-8 shadow-xl shadow-primary/20">
+               {resumeData.fullName?.charAt(0)}
+            </div>
+            
+            <h2 className="text-3xl font-black mb-1">{resumeData.fullName}</h2>
+            <p className="text-primary font-bold">{resumeData.experience?.[0]?.role || "Professionally Analyzed"}</p>
+            
+            <div className="mt-8 space-y-4">
+               {resumeData.email && (
+                 <div className="flex items-center gap-3 text-sm font-bold text-muted-foreground">
+                    <Mail size={16} className="text-primary" /> {resumeData.email}
+                 </div>
+               )}
+               {resumeData.phone && (
+                 <div className="flex items-center gap-3 text-sm font-bold text-muted-foreground">
+                    <Phone size={16} className="text-primary" /> {resumeData.phone}
+                 </div>
+               )}
+               {resumeData.linkedin && (
+                 <div className="flex items-center gap-3 text-sm font-bold text-muted-foreground">
+                    <Linkedin size={16} className="text-primary" /> Profile Linked
+                 </div>
+               )}
+            </div>
+          </motion.div>
 
-// ---------------- Page ----------------
+          <motion.div 
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ delay: 0.2 }}
+             className="glass p-8 rounded-[2.5rem] border border-white/10"
+          >
+             <h3 className="text-xl font-black mb-4 flex items-center gap-3">
+                <Sparkles size={18} className="text-primary" /> AI Summary
+             </h3>
+             <p className="text-muted-foreground text-sm leading-relaxed font-medium">
+                {resumeData.summary}
+             </p>
+          </motion.div>
+        </div>
 
-export default function JDMatchResultPage() {
-  return (
-    <div className="ml-20 w-[calc(100%-5rem)] sm:ml-0 min-h-screen sm:w-full bg-gray-900 text-white p-6 overflow-y-auto">
-      <h1 className="text-3xl font-bold mb-2">Match Result</h1>
-      <p className="text-sm text-gray-400 mb-8">
-        Based on your resume and the job description, here’s your detailed fit analysis.
-      </p>
+        {/* Center/Right Column: Skills, Experience, Projects */}
+        <div className="lg:col-span-2 space-y-10">
+          {/* Skills Section */}
+          <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="glass p-10 rounded-[3rem] border border-white/10"
+          >
+             <h2 className="text-2xl font-black mb-8 flex items-center gap-3">
+                <Code2 size={24} className="text-primary" /> Technical Arsenal
+             </h2>
+             <div className="flex flex-wrap gap-3">
+                {resumeData.skills?.map((skill: string, i: number) => (
+                  <motion.span
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.4 + (i * 0.05) }}
+                    key={skill}
+                    className="px-5 py-2.5 bg-secondary/50 hover:bg-primary/20 transition-colors border border-white/10 rounded-2xl text-sm font-bold text-foreground"
+                  >
+                    {skill}
+                  </motion.span>
+                ))}
+             </div>
+          </motion.section>
 
-      {/* Top: Overall Score + Sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1.2fr,1.8fr] gap-6 mb-8">
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 flex flex-col md:flex-row items-center gap-6">
-          <ScoreRing score={overallMatch} />
-          <div className="space-y-3 w-full md:w-auto">
-            <p className="text-sm text-gray-300 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-blue-400" />
-              <span>
-                This role is a <span className="font-semibold">good match</span> for your skills.
-              </span>
-            </p>
-            <p className="text-xs text-gray-500">
-              Improve your score by adding missing keywords and aligning your experience with the job responsibilities.
-            </p>
+          {/* Experience Section */}
+          <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="space-y-6"
+          >
+             <div className="flex items-center justify-between px-2">
+                <h2 className="text-2xl font-black tracking-tighter flex items-center gap-3">
+                   <Briefcase size={24} className="text-primary" /> Career Path
+                </h2>
+                <div className="h-px flex-1 bg-border/30 mx-6" />
+             </div>
+             
+             <div className="space-y-6">
+                {resumeData.experience?.map((exp: any, i: number) => (
+                  <div key={i} className="glass p-8 rounded-[2.5rem] border border-white/10 relative overflow-hidden">
+                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                        <div>
+                           <h3 className="text-xl font-black text-foreground">{exp.role}</h3>
+                           <p className="text-primary font-bold">{exp.company}</p>
+                        </div>
+                        <span className="px-4 py-1.5 bg-primary/10 text-primary rounded-full text-xs font-black uppercase tracking-widest border border-primary/20">
+                           {exp.duration}
+                        </span>
+                     </div>
+                     <p className="text-sm text-muted-foreground font-medium leading-relaxed">{exp.description}</p>
+                  </div>
+                ))}
+             </div>
+          </motion.section>
+
+          {/* Education & Projects Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+             <motion.section 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.5 }}
+                className="space-y-6"
+             >
+                <h2 className="text-2xl font-black tracking-tighter flex items-center gap-3">
+                   <GraduationCap size={24} className="text-primary" /> Foundation
+                </h2>
+                <div className="space-y-6">
+                   {resumeData.education?.map((edu: any, i: number) => (
+                      <div key={i} className="glass p-6 rounded-4xl border border-white/10">
+                         <h3 className="font-black text-foreground">{edu.degree}</h3>
+                         <p className="text-sm text-muted-foreground font-bold mt-1">{edu.institute}</p>
+                         <p className="text-xs font-black text-primary uppercase mt-3">{edu.year}</p>
+                      </div>
+                   ))}
+                </div>
+             </motion.section>
+
+             <motion.section 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 }}
+                className="space-y-6"
+             >
+                <h2 className="text-2xl font-black tracking-tighter flex items-center gap-3">
+                   <Cpu size={24} className="text-primary" /> Project Forge
+                </h2>
+                <div className="space-y-6">
+                   {resumeData.projects?.map((proj: any, i: number) => (
+                      <div key={i} className="glass p-6 rounded-4xl border border-white/10">
+                         <h3 className="font-black text-foreground">{proj.name}</h3>
+                         <div className="flex flex-wrap gap-2 my-3">
+                            {proj.tech?.map((t: string) => (
+                               <span key={t} className="text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-0.5 rounded-md">{t}</span>
+                            ))}
+                         </div>
+                         <p className="text-xs text-muted-foreground font-medium line-clamp-2">{proj.description}</p>
+                      </div>
+                   ))}
+                </div>
+             </motion.section>
           </div>
-        </div>
-
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-4">
-          <div className="flex items-center gap-2 mb-1">
-            <ListChecks className="w-4 h-4 text-blue-400" />
-            <h2 className="text-sm font-semibold">Section Breakdown</h2>
-          </div>
-          {sectionScores.map((s) => (
-            <SectionScoreBar key={s.label} section={s} />
-          ))}
-        </div>
-      </div>
-
-      {/* Keywords & Skills */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* Keywords */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h2 className="text-sm font-semibold mb-3">Keywords</h2>
-          <p className="text-xs text-gray-500 mb-4">
-            These are the important terms extracted from the job description compared to your resume.
-          </p>
-
-          <h3 className="text-xs font-semibold text-green-400 mb-2">
-            Matched Keywords
-          </h3>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {matchedKeywords.map((k) => (
-              <KeywordChip key={k} keyword={k} type="matched" />
-            ))}
-          </div>
-
-          <h3 className="text-xs font-semibold text-red-400 mb-2">
-            Missing Keywords
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {missingKeywords.map((k) => (
-              <KeywordChip key={k} keyword={k} type="missing" />
-            ))}
-          </div>
-        </div>
-
-        {/* Skills */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h2 className="text-sm font-semibold mb-3">Skills Match</h2>
-          <p className="text-xs text-gray-500 mb-4">
-            Comparison of skill categories between your resume and the job description.
-          </p>
-
-          <div className="space-y-3">
-            {skillCategories.map((cat) => (
-              <SkillCategoryRow key={cat.name} cat={cat} />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* AI Summary & Improvements */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        {/* AI Summary */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-purple-400" />
-            AI Summary
-          </h2>
-          <p className="text-sm text-gray-300 leading-relaxed">{aiSummary}</p>
-        </div>
-
-        {/* Improvements */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-6">
-          <h2 className="text-sm font-semibold mb-3 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-yellow-400" />
-            Recommended Improvements
-          </h2>
-          <ul className="space-y-2 text-sm text-gray-300">
-            {improvementSuggestions.map((s, idx) => (
-              <li key={idx} className="flex gap-2">
-                <span className="mt-[3px] text-blue-400">•</span>
-                <span>{s}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* JD vs Resume Comparison */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-16">
-        <h2 className="text-sm font-semibold mb-3">JD Requirements Coverage</h2>
-        <p className="text-xs text-gray-500 mb-4">
-          Line-by-line view of how well your resume addresses the job requirements.
-        </p>
-
-        <div className="divide-y divide-gray-800">
-          {jdComparisons.map((row, idx) => (
-            <JDComparisonRow key={idx} row={row} />
-          ))}
         </div>
       </div>
     </div>

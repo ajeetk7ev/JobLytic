@@ -1,10 +1,6 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+import { callOpenRouter } from "./openRouterService";
 
 export const convertResumeToStructuredData = async (rawText: string) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
   const prompt = `
   Extract the following structured data from the resume text:
 
@@ -32,7 +28,6 @@ export const convertResumeToStructuredData = async (rawText: string) => {
     "education": [
       {
         "degree": "",
-        "institute": "",
         "year": ""
       }
     ],
@@ -46,14 +41,14 @@ export const convertResumeToStructuredData = async (rawText: string) => {
   """${rawText}"""
   `;
 
-  const result = await model.generateContent(prompt);
-  let textOutput = result.response.text().trim();
+  let textOutput = await callOpenRouter(prompt);
+  textOutput = textOutput.trim();
 
   // Remove markdown fences like ```json ... ```
   textOutput = textOutput.replace(/^```json|```$/g, "").trim();
   textOutput = textOutput.replace(/^```|```$/g, "").trim();
 
-  // Sometimes Gemini wraps output in code blocks multiple times
+  // Sometimes AI wraps output in code blocks multiple times
   textOutput = textOutput
     .replace(/```json/g, "")
     .replace(/```/g, "")
@@ -62,7 +57,7 @@ export const convertResumeToStructuredData = async (rawText: string) => {
   try {
     return JSON.parse(textOutput);
   } catch (e) {
-    console.error("Gemini invalid JSON:", textOutput);
-    throw new Error("Gemini returned invalid JSON");
+    console.error("AI invalid JSON:", textOutput);
+    throw new Error("AI service returned invalid JSON");
   }
 };

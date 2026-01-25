@@ -8,21 +8,20 @@ interface AuthRequest extends Request {
 export const authMiddleware = (
   req: AuthRequest,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
-    const authHeader = req.headers.authorization;
+    const token = req.cookies.token;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({success:false, message: "No token provided" });
+    if (!token) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Authentication required" });
     }
 
-    const token = authHeader.split(" ")[1]; // Bearer <token>
-
-    const decoded = jwt.verify(
-      token,
-      process.env.ACCESS_TOKEN_SECRET!
-    ) as { userId: string };
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
+      userId: string;
+    };
 
     // attach user id to request object
     req.id = decoded.userId;
@@ -32,9 +31,9 @@ export const authMiddleware = (
     console.error("Auth Error:", error.message);
 
     if (error.name === "TokenExpiredError") {
-      return res.status(401).json({ message: "Token expired" });
+      return res.status(401).json({ success: false, message: "Token expired" });
     }
 
-    return res.status(401).json({ message: "Invalid token" });
+    return res.status(401).json({ success: false, message: "Invalid token" });
   }
 };

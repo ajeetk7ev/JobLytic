@@ -11,17 +11,33 @@ import DashboardPage from "./pages/Dashboard";
 import ResumeJDMatcherPage from "./pages/ResumeJDMatcher";
 import JDMatchResultPage from "./pages/ResumeJDResult";
 
+import { useEffect } from "react";
+import { useAuthStore } from "./store/authStore";
+import { useThemeStore } from "./store/themeStore";
+
 function App() {
+  const { checkAuth } = useAuthStore();
+  const { theme } = useThemeStore();
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove('light', 'dark');
+    root.classList.add(theme);
+  }, [theme]);
+
   return (
-  
     <Routes>
       <Route path="/" element={<Navigate to={'/dashboard'} />} />
       <Route
         path="/signup"
         element={
-          <PrivateRoute>
+          <OpenRoute>
             <SignupPage />
-          </PrivateRoute>
+          </OpenRoute>
         }
       />
       <Route
@@ -32,14 +48,17 @@ function App() {
           </OpenRoute>
         }
       />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password/:id" element={<UpdatePassword />} />
-      <Route path="/resume-upload" element={<ResumeUploadPage />} />
-      <Route element={<WorkSpace />}>
+      <Route path="/forgot-password" element={<OpenRoute><ForgotPassword /></OpenRoute>} />
+      <Route path="/reset-password/:id" element={<OpenRoute><UpdatePassword /></OpenRoute>} />
+      
+      <Route element={<PrivateRoute><WorkSpace /></PrivateRoute>}>
         <Route path="/dashboard" index element={<DashboardPage />} />
-        <Route path="resume-jd-matcher" element={<ResumeJDMatcherPage/>} />
-         <Route path="resume-jd-result" element={<JDMatchResultPage/>} />
+        <Route path="/resume-upload" element={<ResumeUploadPage />} />
+        <Route path="/resume-jd-matcher" element={<ResumeJDMatcherPage/>} />
+        <Route path="/resume-jd-result" element={<JDMatchResultPage/>} />
       </Route>
+
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }

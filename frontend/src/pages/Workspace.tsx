@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { useSidebarCollapsedStore } from '@/store/sidebarCollapsedStore';
 import { useEffect, useState } from 'react';
 import WorkSpaceNavbar from '@/components/workspace/Navbar';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function WorkSpace() {
   const { collapsed, setCollapsed } = useSidebarCollapsedStore();
@@ -22,28 +23,32 @@ function WorkSpace() {
     } else{
       setCollapsed(true);
     }
-  }, [isDesktop])
+  }, [isDesktop, setCollapsed])
 
   return (
-    <div className="flex min-h-screen bg-gray-900 text-gray-200">
+    <div className="flex min-h-screen bg-background transition-colors duration-500">
        <WorkSpaceNavbar/>
-      <div className="sm:fixed sm:top-0 sm:left-0 sm:bottom-0">
-        <Sidebar />
-      </div>
+      
+      <Sidebar />
 
-      <div
-        className=" flex-1 overflow-y-auto overflow-x-hidden sm:p-8 pb-20 sm:pb-8 transition-all duration-300"
+      <main
+        className="flex-1 overflow-y-auto overflow-x-hidden pt-20 px-4 sm:px-8 pb-10 transition-all duration-300"
         style={{
-          marginTop:'60px',
-          marginLeft: isDesktop ? (collapsed ? '5rem' : '16rem') : '0',
+          marginLeft: isDesktop ? (collapsed ? '80px' : '256px') : '0',
         }}
       >
-        <Outlet />
-      </div>
+        <div className="max-w-6xl mx-auto">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+            >
+                <Outlet />
+            </motion.div>
+        </div>
+      </main>
     </div>
   );
 }
 
 export default WorkSpace;
-
-

@@ -1,6 +1,4 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+import { callOpenRouter } from "./openRouterService";
 
 interface JobPreferences {
   skills: string[];
@@ -14,8 +12,6 @@ interface JobPreferences {
 }
 
 export const generateJobQuery = async (prefs: JobPreferences) => {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
   const prompt = `
 You are an AI career expert. Your job is to analyze the user's skills and preferences, determine the most likely job roles for them, and generate 5 natural-language job search queries compatible with the JSearch RapidAPI.
 
@@ -80,8 +76,8 @@ ${JSON.stringify(prefs, null, 2)}
 Now return 5 natural job search queries only.
 `;
 
-  const result = await model.generateContent(prompt);
-  let query = result.response.text().trim();
+  let query = await callOpenRouter(prompt);
+  query = query.trim();
 
   // Remove accidental markdown / quotes
   query = query.replace(/```/g, "").replace(/^"|"$/g, "");

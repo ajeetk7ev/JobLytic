@@ -49,7 +49,7 @@ export const createOrder = async (req: Request, res: Response) => {
     const options = {
       amount: amountInPaise,
       currency: "INR",
-      receipt: `receipt_${userId}_${Date.now()}`,
+      receipt: `rcpt_${Date.now()}_${String(userId).slice(-4)}`,
       notes: {
         userId,
         planId,

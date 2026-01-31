@@ -86,6 +86,14 @@ export const login = async (req: Request, res: Response) => {
         .status(400)
         .json({ success: false, message: "User not found" });
 
+    if (!user.password) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "This account uses Google login. Please use Login with Google.",
+      });
+    }
+
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch)
       return res
@@ -121,6 +129,30 @@ export const login = async (req: Request, res: Response) => {
           ? (error as any).message
           : undefined,
     });
+  }
+};
+
+export const googleAuthCallback = async (req: Request, res: Response) => {
+  try {
+    const user = req.user as any;
+    if (!user) {
+      return res.redirect(`${process.env.CLIENT_URL}/login?error=auth_failed`);
+    }
+
+    // Generate token
+    const token = generateToken(user.id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    return res.redirect(`${process.env.CLIENT_URL}/dashboard`);
+  } catch (error) {
+    console.error("Google auth callback error:", error);
+    return res.redirect(`${process.env.CLIENT_URL}/login?error=server_error`);
   }
 };
 
@@ -357,6 +389,12 @@ export const changePassword = async (req: any, res: Response) => {
       return res
         .status(404)
         .json({ success: false, message: "User not found" });
+
+    if (!user.password) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Use Google Login for this account" });
+    }
 
     const isMatch = await comparePassword(currentPassword, user.password);
     if (!isMatch) {

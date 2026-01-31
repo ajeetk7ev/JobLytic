@@ -39,6 +39,7 @@ export type UserMinAggregateOutputType = {
   fullName: string | null
   email: string | null
   password: string | null
+  googleId: string | null
   avatar: string | null
   resetPasswordToken: string | null
   resetPasswordExpire: Date | null
@@ -55,6 +56,7 @@ export type UserMaxAggregateOutputType = {
   fullName: string | null
   email: string | null
   password: string | null
+  googleId: string | null
   avatar: string | null
   resetPasswordToken: string | null
   resetPasswordExpire: Date | null
@@ -71,6 +73,7 @@ export type UserCountAggregateOutputType = {
   fullName: number
   email: number
   password: number
+  googleId: number
   avatar: number
   resetPasswordToken: number
   resetPasswordExpire: number
@@ -97,6 +100,7 @@ export type UserMinAggregateInputType = {
   fullName?: true
   email?: true
   password?: true
+  googleId?: true
   avatar?: true
   resetPasswordToken?: true
   resetPasswordExpire?: true
@@ -113,6 +117,7 @@ export type UserMaxAggregateInputType = {
   fullName?: true
   email?: true
   password?: true
+  googleId?: true
   avatar?: true
   resetPasswordToken?: true
   resetPasswordExpire?: true
@@ -129,6 +134,7 @@ export type UserCountAggregateInputType = {
   fullName?: true
   email?: true
   password?: true
+  googleId?: true
   avatar?: true
   resetPasswordToken?: true
   resetPasswordExpire?: true
@@ -231,7 +237,8 @@ export type UserGroupByOutputType = {
   id: string
   fullName: string
   email: string
-  password: string
+  password: string | null
+  googleId: string | null
   avatar: string | null
   resetPasswordToken: string | null
   resetPasswordExpire: Date | null
@@ -270,7 +277,8 @@ export type UserWhereInput = {
   id?: Prisma.StringFilter<"User"> | string
   fullName?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
-  password?: Prisma.StringFilter<"User"> | string
+  password?: Prisma.StringNullableFilter<"User"> | string | null
+  googleId?: Prisma.StringNullableFilter<"User"> | string | null
   avatar?: Prisma.StringNullableFilter<"User"> | string | null
   resetPasswordToken?: Prisma.StringNullableFilter<"User"> | string | null
   resetPasswordExpire?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -290,6 +298,7 @@ export type UserOrderByWithRelationInput = {
   fullName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  googleId?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   resetPasswordToken?: Prisma.SortOrder
   resetPasswordExpire?: Prisma.SortOrder
@@ -307,11 +316,12 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: string
   email?: string
+  googleId?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   fullName?: Prisma.StringFilter<"User"> | string
-  password?: Prisma.StringFilter<"User"> | string
+  password?: Prisma.StringNullableFilter<"User"> | string | null
   avatar?: Prisma.StringNullableFilter<"User"> | string | null
   resetPasswordToken?: Prisma.StringNullableFilter<"User"> | string | null
   resetPasswordExpire?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
@@ -324,13 +334,14 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   resumes?: Prisma.ResumeListRelationFilter
   jobApplications?: Prisma.JobApplicationListRelationFilter
   payments?: Prisma.PaymentListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "googleId">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   fullName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  googleId?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   resetPasswordToken?: Prisma.SortOrder
   resetPasswordExpire?: Prisma.SortOrder
@@ -354,7 +365,8 @@ export type UserScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"User"> | string
   fullName?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
-  password?: Prisma.StringWithAggregatesFilter<"User"> | string
+  password?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  googleId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   avatar?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   resetPasswordToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   resetPasswordExpire?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
@@ -370,7 +382,8 @@ export type UserCreateInput = {
   id?: string
   fullName: string
   email: string
-  password: string
+  password?: string | null
+  googleId?: string | null
   avatar?: string | null
   resetPasswordToken?: string | null
   resetPasswordExpire?: Date | string | null
@@ -389,7 +402,8 @@ export type UserUncheckedCreateInput = {
   id?: string
   fullName: string
   email: string
-  password: string
+  password?: string | null
+  googleId?: string | null
   avatar?: string | null
   resetPasswordToken?: string | null
   resetPasswordExpire?: Date | string | null
@@ -407,7 +421,8 @@ export type UserUncheckedCreateInput = {
 export type UserUpdateInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordExpire?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -425,7 +440,8 @@ export type UserUpdateInput = {
 export type UserUncheckedUpdateInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordExpire?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -444,7 +460,8 @@ export type UserCreateManyInput = {
   id?: string
   fullName: string
   email: string
-  password: string
+  password?: string | null
+  googleId?: string | null
   avatar?: string | null
   resetPasswordToken?: string | null
   resetPasswordExpire?: Date | string | null
@@ -459,7 +476,8 @@ export type UserCreateManyInput = {
 export type UserUpdateManyMutationInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordExpire?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -474,7 +492,8 @@ export type UserUpdateManyMutationInput = {
 export type UserUncheckedUpdateManyInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordExpire?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -491,6 +510,7 @@ export type UserCountOrderByAggregateInput = {
   fullName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  googleId?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   resetPasswordToken?: Prisma.SortOrder
   resetPasswordExpire?: Prisma.SortOrder
@@ -511,6 +531,7 @@ export type UserMaxOrderByAggregateInput = {
   fullName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  googleId?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   resetPasswordToken?: Prisma.SortOrder
   resetPasswordExpire?: Prisma.SortOrder
@@ -527,6 +548,7 @@ export type UserMinOrderByAggregateInput = {
   fullName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
+  googleId?: Prisma.SortOrder
   avatar?: Prisma.SortOrder
   resetPasswordToken?: Prisma.SortOrder
   resetPasswordExpire?: Prisma.SortOrder
@@ -619,7 +641,8 @@ export type UserCreateWithoutPaymentsInput = {
   id?: string
   fullName: string
   email: string
-  password: string
+  password?: string | null
+  googleId?: string | null
   avatar?: string | null
   resetPasswordToken?: string | null
   resetPasswordExpire?: Date | string | null
@@ -637,7 +660,8 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   id?: string
   fullName: string
   email: string
-  password: string
+  password?: string | null
+  googleId?: string | null
   avatar?: string | null
   resetPasswordToken?: string | null
   resetPasswordExpire?: Date | string | null
@@ -670,7 +694,8 @@ export type UserUpdateToOneWithWhereWithoutPaymentsInput = {
 export type UserUpdateWithoutPaymentsInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordExpire?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -687,7 +712,8 @@ export type UserUpdateWithoutPaymentsInput = {
 export type UserUncheckedUpdateWithoutPaymentsInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordExpire?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -705,7 +731,8 @@ export type UserCreateWithoutResumesInput = {
   id?: string
   fullName: string
   email: string
-  password: string
+  password?: string | null
+  googleId?: string | null
   avatar?: string | null
   resetPasswordToken?: string | null
   resetPasswordExpire?: Date | string | null
@@ -723,7 +750,8 @@ export type UserUncheckedCreateWithoutResumesInput = {
   id?: string
   fullName: string
   email: string
-  password: string
+  password?: string | null
+  googleId?: string | null
   avatar?: string | null
   resetPasswordToken?: string | null
   resetPasswordExpire?: Date | string | null
@@ -756,7 +784,8 @@ export type UserUpdateToOneWithWhereWithoutResumesInput = {
 export type UserUpdateWithoutResumesInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordExpire?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -773,7 +802,8 @@ export type UserUpdateWithoutResumesInput = {
 export type UserUncheckedUpdateWithoutResumesInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordExpire?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -791,7 +821,8 @@ export type UserCreateWithoutJobApplicationsInput = {
   id?: string
   fullName: string
   email: string
-  password: string
+  password?: string | null
+  googleId?: string | null
   avatar?: string | null
   resetPasswordToken?: string | null
   resetPasswordExpire?: Date | string | null
@@ -809,7 +840,8 @@ export type UserUncheckedCreateWithoutJobApplicationsInput = {
   id?: string
   fullName: string
   email: string
-  password: string
+  password?: string | null
+  googleId?: string | null
   avatar?: string | null
   resetPasswordToken?: string | null
   resetPasswordExpire?: Date | string | null
@@ -842,7 +874,8 @@ export type UserUpdateToOneWithWhereWithoutJobApplicationsInput = {
 export type UserUpdateWithoutJobApplicationsInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordExpire?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -859,7 +892,8 @@ export type UserUpdateWithoutJobApplicationsInput = {
 export type UserUncheckedUpdateWithoutJobApplicationsInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  googleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resetPasswordExpire?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -927,6 +961,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   fullName?: boolean
   email?: boolean
   password?: boolean
+  googleId?: boolean
   avatar?: boolean
   resetPasswordToken?: boolean
   resetPasswordExpire?: boolean
@@ -949,6 +984,7 @@ export type UserSelectScalar = {
   fullName?: boolean
   email?: boolean
   password?: boolean
+  googleId?: boolean
   avatar?: boolean
   resetPasswordToken?: boolean
   resetPasswordExpire?: boolean
@@ -960,7 +996,7 @@ export type UserSelectScalar = {
   subscriptionExpiresAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "email" | "password" | "avatar" | "resetPasswordToken" | "resetPasswordExpire" | "refreshToken" | "createdAt" | "updatedAt" | "credits" | "plan" | "subscriptionExpiresAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "email" | "password" | "googleId" | "avatar" | "resetPasswordToken" | "resetPasswordExpire" | "refreshToken" | "createdAt" | "updatedAt" | "credits" | "plan" | "subscriptionExpiresAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
   jobApplications?: boolean | Prisma.User$jobApplicationsArgs<ExtArgs>
@@ -979,7 +1015,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     id: string
     fullName: string
     email: string
-    password: string
+    password: string | null
+    googleId: string | null
     avatar: string | null
     resetPasswordToken: string | null
     resetPasswordExpire: Date | null
@@ -1388,6 +1425,7 @@ export interface UserFieldRefs {
   readonly fullName: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
+  readonly googleId: Prisma.FieldRef<"User", 'String'>
   readonly avatar: Prisma.FieldRef<"User", 'String'>
   readonly resetPasswordToken: Prisma.FieldRef<"User", 'String'>
   readonly resetPasswordExpire: Prisma.FieldRef<"User", 'DateTime'>

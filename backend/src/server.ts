@@ -8,12 +8,14 @@ import resumeRoutes from "./routes/resume.routes";
 import jobRoutes from "./routes/job.routes";
 import jobApplicationRoutes from "./routes/jobApplication.routes";
 import subscriptionRoutes from "./routes/subscription.routes";
+import passport from "passport";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(passport.initialize());
 app.use(
   cors({
     origin: process.env.CLIENT_URL!,

@@ -11,6 +11,7 @@ import { sendEmail } from "../utils/mailSender";
 export const signup = async (req: Request, res: Response) => {
   try {
     const parsed = signupSchema.safeParse(req.body);
+    
     if (!parsed.success) {
       return res
         .status(400)
@@ -23,7 +24,7 @@ export const signup = async (req: Request, res: Response) => {
     if (existingUser)
       return res
         .status(400)
-        .json({ success: false, message: "Email already exists" });
+        .json({ success: false, message: "Email already exists Plz Login" });
 
     const hashedPassword = await hashPassword(password);
 

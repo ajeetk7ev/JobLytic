@@ -20,7 +20,7 @@ export const authMiddleware = (
     }
 
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!) as {
-      userId: string;
+      userId: string
     };
 
     // attach user id to request object

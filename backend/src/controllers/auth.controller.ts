@@ -1,7 +1,7 @@
 import { prisma } from "../config/prisma";
 import { comparePassword, hashPassword } from "../utils/hashPassword";
 import { generateToken } from "../utils/generateToken";
-import { Request, Response } from "express";
+import { Request, Response } from "express"
 import { loginSchema, signupSchema } from "../validators/auth.validator";
 import crypto from "crypto";
 import jwt, { JwtPayload } from "jsonwebtoken";

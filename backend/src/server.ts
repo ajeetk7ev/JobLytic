@@ -24,7 +24,7 @@ app.use(
 );
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Server is working fine");
+  res.send("Server is working");
 });
 
 app.use("/api/auth", authRoutes);

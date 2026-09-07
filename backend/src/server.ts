@@ -13,7 +13,8 @@ import passport from "passport";
 const app = express();
 const PORT = process.env.PORT
 
-app.use(express.json());
+app.use(express.json({ limit: '200kb' }));
+
 app.use(cookieParser());
 app.use(passport.initialize());
 app.use(

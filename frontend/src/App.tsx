@@ -39,7 +39,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Navigate to={'/dashboard'} />} />
       <Route
-        path="/signup"
+        path="/register"
         element={
           <OpenRoute>
             <SignupPage />

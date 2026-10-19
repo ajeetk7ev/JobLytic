@@ -45,7 +45,7 @@ export default function PDFViewer({ file }: Props) {
               pageNumber={i + 1}
               renderTextLayer={true}
               renderAnnotationLayer={true}
-              width={500} // change as needed
+              width={500} 
             />
           </div>
         ))}

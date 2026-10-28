@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-     <Toaster position='top-right'/>
+     <Toaster position='bottom-right'/>
     <App/>
   </BrowserRouter>
 )
